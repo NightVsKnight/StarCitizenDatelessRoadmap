@@ -1,0 +1,16 @@
+{
+  "name": "Star Citizen Dateless Roadmap",
+  "short_name": "StarCitizenDatelessRoadmap",
+  "description": "Strips all dates from Star Citizen's Roadmap",
+  "version": "0.2",
+  "author": "NightVsKnight",
+  "manifest_version": 2,
+  "permissions": [
+    "https://robertsspaceindustries.com/roadmap/board/*"
+  ],
+  "content_scripts": [{
+    "matches": ["https://robertsspaceindustries.com/roadmap/board/*"],
+    "js": ["jquery-3.4.1.min.js", "main.js"],
+    "run_at": "document_end"
+  }]
+}
