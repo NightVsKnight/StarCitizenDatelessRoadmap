@@ -1,7 +1,7 @@
 {
-  "name": "Star Citizen Dateless Roadmap",
-  "short_name": "StarCitizenDatelessRoadmap",
-  "description": "Strips all dates from Star Citizen's Roadmap",
+  "name": "Star Citizen Feature-Driven Roadmap",
+  "short_name": "StarCitizenFeatureDrivenRoadmap",
+  "description": "Reimagines Star Citizen roadmap from Date-Driven to Feature-Driven by simply replacing all dates with feature progress.",
   "version": "0.2",
   "author": "NightVsKnight",
   "manifest_version": 2,
