@@ -1,4 +1,8 @@
 
+// TODO:(pv) Add menu to 1) Browse to roadmap, 2) Option to [not] highlight changes
+// TODO:(pv) Support SQ42 roadmap (this is a bit different of a paradigm)
+// TODO:(pv) Support Firefox/etc...
+
 function main() {
   //console.log('+main()');
 
@@ -52,9 +56,14 @@ function main() {
     });
     //console.log('totalCount', totalCount);
     //console.log('totalCountCompleted', totalCountCompleted);
+    var header = unreleased.find($('header.Release__Header-sc-1y9ya50-1.uNMJL'));
+    //console.log('header', header);
+    header.css('height', 'auto');
     var subtitle = unreleased.find($('h3.Release__Description-sc-1y9ya50-4.jSxVzn'));
     //console.log('subtitle', subtitle);
-    subtitle.html(`${parseFloat(100 * totalCountCompleted / totalCount).toFixed(2)}% (${totalCountCompleted} completed of ${totalCount})`)
+    var subtitlePercentCompleted = `${parseFloat(100 * totalCountCompleted / totalCount).toFixed(2)}% (${totalCountCompleted} completed of ${totalCount})`;
+    subtitle.html(`${subtitlePercentCompleted}<br>Estimated ${subtitle.html()}`);
+    subtitle.css('border', '3px solid yellow');
   });
   
   //console.log('-main()');
@@ -71,7 +80,7 @@ var interval = setInterval(() => {
     //console.log('releaseCountCurrent', releaseCountCurrent);
     if (releaseCountCurrent == releaseCountPrevious) {
       clearInterval(interval);
-      main();
+      setTimeout(main, 200);
     } else {
       releaseCountPrevious = releaseCountCurrent;
     }
