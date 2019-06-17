@@ -2,6 +2,7 @@
 // TODO:(pv) Add menu to 1) Browse to roadmap, 2) Option to [not] highlight changes
 // TODO:(pv) Support SQ42 roadmap (this is a bit different of a paradigm)
 // TODO:(pv) Support Firefox/etc...
+// TODO:(pv) Use storage to save # of tasks, and then report increase or decrease since beginning of version
 
 function main() {
   //console.log('+main()');
@@ -61,8 +62,8 @@ function main() {
     header.css('height', 'auto');
     var subtitle = unreleased.find($('h3.Release__Description-sc-1y9ya50-4.jSxVzn'));
     //console.log('subtitle', subtitle);
-    var subtitlePercentCompleted = `${parseFloat(100 * totalCountCompleted / totalCount).toFixed(2)}% (${totalCountCompleted} completed of ${totalCount})`;
-    subtitle.html(`${subtitlePercentCompleted}<br>Estimated ${subtitle.html()}`);
+    var subtitlePercentCompleted = `${totalCountCompleted} completed of ${totalCount} (${parseFloat(100 * totalCountCompleted / totalCount).toFixed(2)}%)`;
+    subtitle.html(`${subtitlePercentCompleted}<br>Estimate: End of ${subtitle.html()}`);
     subtitle.css('border', '3px solid yellow');
   });
   
