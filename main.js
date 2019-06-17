@@ -4,87 +4,106 @@
 // TODO:(pv) Support Firefox/etc...
 // TODO:(pv) Use storage to save # of tasks, and then report increase or decrease since beginning of version
 
-function main() {
-  //console.log('+main()');
+class RoadmapProcessor {
+  constructor() {
+    this.unreleasedVersionsCountPrevious = 0;
+  }
+  _getUnreleasedVersions() {
+    return $('section.Release__Wrapper-sc-1y9ya50-0.kzsHGd');
+  }
+  _getCardCounts(unreleasedVersion) {
+    return unreleasedVersion.find($('h3.Category__CardCount-sc-3z36kz-4.cgDnlq'));
+  }
+  _getTaskCount(cardCount) {
+    return cardCount.find($('span.Category__TaskCount-sc-3z36kz-5.grmSrF'));
+  }
+  _getHeader(unreleasedVersion) {
+    return unreleasedVersion.find($('header.Release__Header-sc-1y9ya50-1.uNMJL'));
+  }
+  _getSubtitle(unreleasedVersion) {
+    return unreleasedVersion.find($('h3.Release__Description-sc-1y9ya50-4.jSxVzn'));
+  }
+  process() {
+    var unreleasedVersions = this._getUnreleasedVersions();
+    //console.log('unreleasedVersions', unreleasedVersions);
+    //unreleasedVersions.css('border', '3px solid red');
 
-  // <section data-released="0" class="Release__Wrapper-sc-1y9ya50-0 kzsHGd">...</section>
-  var unreleaseds = $('section.Release__Wrapper-sc-1y9ya50-0.kzsHGd');
-  //console.log('unreleaseds', unreleaseds);
-  //unreleaseds.css('border', '3px solid red');
-  unreleaseds.each((index, unreleased) => {
-    //console.log('unreleased', unreleased);
-    unreleased = $(unreleased);
-    var cardCounts = unreleased.find($('h3.Category__CardCount-sc-3z36kz-4.cgDnlq')); // "1 entry"
-    //console.log('cardCounts', cardCounts);
-    var totalCount = 0;
-    var totalCountCompleted = 0;
-    cardCounts.each((index, cardCount) => {
-      cardCount = $(cardCount);
-      var cardCountText = cardCount.text();
-      //console.log('cardCountText1', cardCountText);
-      var taskCount = cardCount.find($('span.Category__TaskCount-sc-3z36kz-5.grmSrF')); // "<span class="Category__CountSeparator-sc-3z36kz-6 gaLoHd"></span>9 completed, 4 in development"
-      //console.log('taskCount', taskCount);
-      var taskCountText = taskCount.text();
-      //console.log(`taskCountText="${taskCountText}"`);
-      cardCountText = cardCountText.replace(taskCountText, '');
-      //console.log('cardCountText2', cardCountText);
-      var cardCountTotal = parseInt(cardCountText.split(' ')[0]);
-      //console.log('cardCountTotal', cardCountTotal);
-
-      var taskCountParts = taskCountText.split(', ');
-      //console.log('taskCountParts', taskCountParts);
-      var taskCountCompleted = 0;
-      if (taskCountParts.length > 0) {
-        taskCountParts.forEach(taskCountPart => {
-          //console.log(`taskCountPart="${taskCountPart}"`);
-          if (taskCountPart === '') {
-            return;
-          }
-          var index = taskCountPart.indexOf(' ');
-          var partValue = parseInt(taskCountPart.substring(0, index));
-          //console.log(`partValue="${partValue}"`);
-          var partName = taskCountPart.substring(index).toLowerCase().trim();
-          //console.log(`partName="${partName}"`);
-          if (partName === 'completed') {
-            taskCountCompleted = partValue;
-          }
-        });
+    var isRoadmapStillRendering = true;
+    //console.log('document.readyState', document.readyState);
+    if (document.readyState === 'complete') {
+      //console.log('unreleasedVersions', unreleasedVersions);
+      var unreleasedVersionsCountCurrent = unreleasedVersions.length;
+      //console.log('unreleasedVersionsCountCurrent', unreleasedVersionsCountCurrent);
+      if (unreleasedVersionsCountCurrent > 0 && unreleasedVersionsCountCurrent == this.unreleasedVersionsCountPrevious) {
+        isRoadmapStillRendering = false;
+      } else {
+        this.unreleasedVersionsCountPrevious = unreleasedVersionsCountCurrent;
       }
-      //console.log('taskCountCompleted', taskCountCompleted);
+    }
+    if (isRoadmapStillRendering) {
+      setTimeout(this.process.bind(this), 100);
+      return;
+    }
 
-      totalCount += cardCountTotal;
-      totalCountCompleted += taskCountCompleted;
+    unreleasedVersions.each((index, unreleasedVersion) => {
+      //console.log('unreleasedVersion', unreleasedVersion);
+      unreleasedVersion = $(unreleasedVersion);
+      var cardCounts = this._getCardCounts(unreleasedVersion)
+      //console.log('cardCounts', cardCounts);
+      var totalCount = 0;
+      var totalCountCompleted = 0;
+      cardCounts.each((index, cardCount) => {
+        cardCount = $(cardCount);
+        var cardCountText = cardCount.text();
+        //console.log('cardCountText1', cardCountText);
+        var taskCount = this._getTaskCount(cardCount);
+        //console.log('taskCount', taskCount);
+        var taskCountText = taskCount.text();
+        //console.log(`taskCountText="${taskCountText}"`);
+        cardCountText = cardCountText.replace(taskCountText, '');
+        //console.log('cardCountText2', cardCountText);
+        var cardCountTotal = parseInt(cardCountText.split(' ')[0]);
+        //console.log('cardCountTotal', cardCountTotal);
+
+        var taskCountParts = taskCountText.split(', ');
+        //console.log('taskCountParts', taskCountParts);
+        var taskCountCompleted = 0;
+        if (taskCountParts.length > 0) {
+          taskCountParts.forEach(taskCountPart => {
+            //console.log(`taskCountPart="${taskCountPart}"`);
+            if (taskCountPart === '') {
+              return;
+            }
+            var index = taskCountPart.indexOf(' ');
+            var partValue = parseInt(taskCountPart.substring(0, index));
+            //console.log(`partValue="${partValue}"`);
+            var partName = taskCountPart.substring(index).toLowerCase().trim();
+            //console.log(`partName="${partName}"`);
+            if (partName === 'completed') {
+              taskCountCompleted = partValue;
+            }
+          });
+        }
+        //console.log('taskCountCompleted', taskCountCompleted);
+
+        totalCount += cardCountTotal;
+        totalCountCompleted += taskCountCompleted;
+      });
+      //console.log('totalCount', totalCount);
+      //console.log('totalCountCompleted', totalCountCompleted);
+      var header = this._getHeader(unreleasedVersion);
+      //console.log('header', header);
+      header.css('height', 'auto');
+      var subtitle = this._getSubtitle(unreleasedVersion);
+      //console.log('subtitle', subtitle);
+      //var subtitleReleaseDate = subtitle.html();
+      var subtitlePercentCompleted = `${totalCountCompleted} completed of ${totalCount} (${parseFloat(100 * totalCountCompleted / totalCount).toFixed(2)}%)`;
+      var subtitleHtml = subtitlePercentCompleted;
+      //subtitleHtml += `<br>Estimate: End of ${subtitleReleaseDate}`
+      subtitle.html(subtitleHtml);
+      subtitle.css('border', '3px solid yellow');
     });
-    //console.log('totalCount', totalCount);
-    //console.log('totalCountCompleted', totalCountCompleted);
-    var header = unreleased.find($('header.Release__Header-sc-1y9ya50-1.uNMJL'));
-    //console.log('header', header);
-    header.css('height', 'auto');
-    var subtitle = unreleased.find($('h3.Release__Description-sc-1y9ya50-4.jSxVzn'));
-    //console.log('subtitle', subtitle);
-    var subtitlePercentCompleted = `${totalCountCompleted} completed of ${totalCount} (${parseFloat(100 * totalCountCompleted / totalCount).toFixed(2)}%)`;
-    subtitle.html(`${subtitlePercentCompleted}<br>Estimate: End of ${subtitle.html()}`);
-    subtitle.css('border', '3px solid yellow');
-  });
-  
-  //console.log('-main()');
+  }
 }
 
-var releaseCountPrevious = 0;
-
-var interval = setInterval(() => {
-  //console.log('document.readyState', document.readyState);
-  if (document.readyState === 'complete') {
-    var result = $('h3.Release__Description-sc-1y9ya50-4.jSxVzn');
-    //console.log('result', result);
-    var releaseCountCurrent = result.length;
-    //console.log('releaseCountCurrent', releaseCountCurrent);
-    if (releaseCountCurrent != 0 && releaseCountCurrent == releaseCountPrevious) {
-      clearInterval(interval);
-      setTimeout(main, 200);
-    } else {
-      releaseCountPrevious = releaseCountCurrent;
-    }
-  }    
-}, 100);
-
+new RoadmapProcessor().process();
