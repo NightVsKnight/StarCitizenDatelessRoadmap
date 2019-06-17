@@ -70,7 +70,7 @@ function main() {
   //console.log('-main()');
 }
 
-var releaseCountPrevious = -1;
+var releaseCountPrevious = 0;
 
 var interval = setInterval(() => {
   //console.log('document.readyState', document.readyState);
@@ -79,7 +79,7 @@ var interval = setInterval(() => {
     //console.log('result', result);
     var releaseCountCurrent = result.length;
     //console.log('releaseCountCurrent', releaseCountCurrent);
-    if (releaseCountCurrent == releaseCountPrevious) {
+    if (releaseCountCurrent != 0 && releaseCountCurrent == releaseCountPrevious) {
       clearInterval(interval);
       setTimeout(main, 200);
     } else {
