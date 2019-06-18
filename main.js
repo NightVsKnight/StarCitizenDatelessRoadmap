@@ -1,3 +1,4 @@
+{
 
 // TODO:(pv) Add menu to 1) Browse to roadmap, 2) Option to [not] highlight changes
 // TODO:(pv) Support SQ42 roadmap (this is a bit different of a paradigm)
@@ -7,6 +8,9 @@
 class RoadmapProcessor {
   constructor() {
     this.unreleasedVersionsCountPrevious = 0;
+  }
+  formatFloat(number, decimals) {
+    return parseFloat(number).toFixed(decimals);
   }
   _getUnreleasedVersions() {
     return $('section.Release__Wrapper-sc-1y9ya50-0.kzsHGd');
@@ -24,6 +28,8 @@ class RoadmapProcessor {
     return unreleasedVersion.find($('h3.Release__Description-sc-1y9ya50-4.jSxVzn'));
   }
   process() {
+    //console.log('process()');
+
     var unreleasedVersions = this._getUnreleasedVersions();
     //console.log('unreleasedVersions', unreleasedVersions);
     //unreleasedVersions.css('border', '3px solid red');
@@ -41,9 +47,12 @@ class RoadmapProcessor {
       }
     }
     if (isRoadmapStillRendering) {
+      //console.log('retrying...');
       setTimeout(this.process.bind(this), 100);
       return;
     }
+
+    //console.log('processing...');
 
     unreleasedVersions.each((index, unreleasedVersion) => {
       //console.log('unreleasedVersion', unreleasedVersion);
@@ -89,17 +98,28 @@ class RoadmapProcessor {
         totalCount += cardCountTotal;
         totalCountCompleted += taskCountCompleted;
       });
+
       //console.log('totalCount', totalCount);
       //console.log('totalCountCompleted', totalCountCompleted);
+
       var header = this._getHeader(unreleasedVersion);
       //console.log('header', header);
       header.css('height', 'auto');
       var subtitle = this._getSubtitle(unreleasedVersion);
       //console.log('subtitle', subtitle);
-      //var subtitleReleaseDate = subtitle.html();
-      var subtitlePercentCompleted = `${totalCountCompleted} completed of ${totalCount} (${parseFloat(100 * totalCountCompleted / totalCount).toFixed(2)}%)`;
+      var subtitlePercentCompleted = `${totalCountCompleted} completed of ${totalCount} (${this.formatFloat(100 * totalCountCompleted / totalCount, 2)}%)`;
       var subtitleHtml = subtitlePercentCompleted;
-      //subtitleHtml += `<br>Estimate: End of ${subtitleReleaseDate}`
+
+      if (false) {
+        var subtitleReleaseDate = subtitle.html();
+        //subtitleReleaseDate = 'Q2 2019'; // <- for test purposes only
+        //subtitleReleaseDate = '2019/07/01'; // <- for test purposes only
+        if (/Q\d \d{4}/.test(subtitleReleaseDate)) {
+          subtitleReleaseDate = `End of ${subtitleReleaseDate}`
+        }
+        subtitleHtml += `<br>Estimate: ${subtitleReleaseDate}`;
+      }
+
       subtitle.html(subtitleHtml);
       subtitle.css('border', '3px solid yellow');
     });
@@ -107,3 +127,5 @@ class RoadmapProcessor {
 }
 
 new RoadmapProcessor().process();
+
+}

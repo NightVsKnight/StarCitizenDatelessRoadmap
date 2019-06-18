@@ -2,15 +2,16 @@
   "name": "Star Citizen Feature-Driven Roadmap",
   "short_name": "StarCitizenFeatureDrivenRoadmap",
   "description": "Reimagines Star Citizen roadmap from Date-Driven to Feature-Driven by simply replacing all dates with feature progress.",
-  "version": "0.3.1.0",
+  "version": "0.3.2.0",
   "author": "NightVsKnight",
   "manifest_version": 2,
   "permissions": [
-    "https://robertsspaceindustries.com/roadmap/board/1-Star-Citizen"
+    "https://robertsspaceindustries.com/roadmap/board/*",
+    "tabs", "webNavigation"
   ],
   "content_scripts": [{
-    "matches": ["https://robertsspaceindustries.com/roadmap/board/1-Star-Citizen"],
+    "matches": ["https://robertsspaceindustries.com/roadmap/board/*"],
     "js": ["jquery-3.4.1.min.js", "main.js"],
-    "run_at": "document_end"
+    "run_at": "document_start"
   }]
 }
