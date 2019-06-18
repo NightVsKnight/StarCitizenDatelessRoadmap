@@ -13,5 +13,9 @@
     "matches": ["https://robertsspaceindustries.com/roadmap/board/*"],
     "js": ["jquery-3.4.1.min.js", "main.js"],
     "run_at": "document_start"
-  }]
+  }],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  }
 }
