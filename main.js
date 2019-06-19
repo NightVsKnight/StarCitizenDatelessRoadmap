@@ -1,6 +1,6 @@
 {
 
-// TODO:(pv) Add menu to 1) Browse to roadmap, 2) Option to [not] highlight changes
+// TODO:(pv) Add menu to 1) Browse to roadmap, 2) Option to [not] highlight changes, 3) Option to show Estimated release
 // TODO:(pv) Support SQ42 roadmap (this is a bit different of a paradigm)
 // TODO:(pv) Support Firefox/etc...
 // TODO:(pv) Use storage to save # of tasks, and then report increase or decrease since beginning of version
